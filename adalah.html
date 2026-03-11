@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+padding:0;
+background:radial-gradient(circle,#2b1055,#7597de);
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+font-family:'Poppins',sans-serif;
+color:white;
+}
+
+/* container */
+
+.container{
+text-align:center;
+position:relative;
+z-index:10;
+}
+
+/* tombol */
+
+#start-btn{
+padding:15px 40px;
+font-size:1.5rem;
+background:#ff4081;
+color:white;
+border:none;
+border-radius:50px;
+cursor:pointer;
+box-shadow:0 0 20px rgba(255,64,129,0.6);
+animation:pulse 1.5s infinite;
+}
+
+/* cake */
+
+.cake-container{
+display:none;
+flex-direction:column;
+align-items:center;
+animation:popUp 1s ease-out;
+}
+
+.cake{
+position:relative;
+width:200px;
+height:150px;
+}
+
+.plate{
+width:220px;
+height:10px;
+background:#ddd;
+border-radius:10px;
+position:absolute;
+bottom:-10px;
+left:-10px;
+}
+
+.layer{
+position:absolute;
+width:100%;
+height:60px;
+background:#ff9a9e;
+border-radius:10px 10px 0 0;
+}
+
+.layer-bottom{bottom:0;}
+.layer-top{bottom:60px;background:#fad0c4;}
+
+.icing{
+position:absolute;
+top:0;
+width:100%;
+height:15px;
+background:#fff;
+border-radius:10px 10px 0 0;
+}
+
+.candle{
+position:absolute;
+width:10px;
+height:40px;
+background:repeating-linear-gradient(45deg,#ffeb3b,#ffeb3b 5px,#f44336 5px,#f44336 10px);
+top:-30px;
+left:50%;
+transform:translateX(-50%);
+}
+
+.flame{
+position:absolute;
+width:12px;
+height:20px;
+background:orange;
+border-radius:50% 50% 20% 20%;
+top:-25px;
+left:50%;
+transform:translateX(-50%);
+box-shadow:0 0 10px yellow,0 0 20px orange;
+animation:flicker .5s infinite alternate;
+}
+
+/* FOTO UTAMA */
+
+.birthday-photo{
+opacity:0;
+transform:translateY(40px) scale(.8);
+transition:all 1s ease;
+margin-top:25px;
+}
+
+.birthday-photo img{
+width:200px;
+border-radius:20px;
+box-shadow:0 10px 25px rgba(0,0,0,.4);
+}
+
+.show-photo{
+opacity:1;
+transform:translateY(0) scale(1);
+}
+
+/* FOTO JATUH */
+
+.falling-photos{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+pointer-events:none;
+}
+
+/* BALON */
+
+.balloons{
+position:absolute;
+bottom:-200px;
+width:100%;
+height:100%;
+pointer-events:none;
+overflow:hidden;
+}
+
+/* animasi */
+
+@keyframes photoFall{
+
+0%{
+transform:translateY(-200px) rotate(-10deg);
+opacity:0;
+}
+
+20%{opacity:1;}
+
+100%{
+transform:translateY(120vh) rotate(10deg);
+opacity:0;
+}
+
+}
+
+@keyframes balloonUp{
+
+0%{
+transform:translate(0,0) rotate(0deg);
+}
+
+25%{
+transform:translate(-20px,-30vh) rotate(-5deg);
+}
+
+50%{
+transform:translate(20px,-60vh) rotate(5deg);
+}
+
+75%{
+transform:translate(-15px,-90vh) rotate(-3deg);
+}
+
+100%{
+transform:translate(10px,-120vh) rotate(3deg);
+}
+
+}
+
+.message{
+margin-top:30px;
+opacity:0;
+transform:translateY(20px);
+transition:all 1s ease;
+}
+
+h1{
+font-family:'Dancing Script',cursive;
+font-size:3.5rem;
+margin:0;
+}
+
+p{
+font-size:1.2rem;
+margin-top:10px;
+color:#ffd1dc;
+}
+
+#confetti-canvas{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+pointer-events:none;
+z-index:5;
+}
+
+@keyframes pulse{
+0%{transform:scale(1);}
+50%{transform:scale(1.05);}
+100%{transform:scale(1);}
+}
+
+@keyframes popUp{
+0%{transform:scale(0);opacity:0;}
+80%{transform:scale(1.1);opacity:1;}
+100%{transform:scale(1);}
+}
+
+.show-message{
+opacity:1!important;
+transform:translateY(0)!important;
+}
+
+</style>
+</head>
+
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<div class="falling-photos" id="photos"></div>
+
+<div class="balloons" id="balloons"></div>
+
+<div class="container">
+
+<button id="start-btn">Klik untuk Membuka 🎁</button>
+
+<div class="cake-container" id="content">
+
+<div class="cake">
+<div class="plate"></div>
+<div class="layer layer-bottom"></div>
+<div class="layer layer-top">
+<div class="icing"></div>
+</div>
+<div class="candle">
+<div class="flame"></div>
+</div>
+</div>
+
+<div class="birthday-photo" id="photo">
+</div>
+
+<div class="message" id="text-area">
+
+<h1 id="name">Happy Birthday!</h1>
+
+<p>
+Semoga panjang umur, sehat selalu, dan bahagia selamanya! 🎉<br>
+from kakak ipar or nikenn, kakak or marsaa,<br>
+waria or memen, adikk or awuliaa :3
+</p>
+
+</div>
+
+</div>
+</div>
+
+<audio id="bg-music" loop>
+<source src="jamrud-ulangtahun.mp3" type="audio/mpeg">
+</audio>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<script>
+
+const startBtn=document.getElementById('start-btn');
+const content=document.getElementById('content');
+const textArea=document.getElementById('text-area');
+const music=document.getElementById('bg-music');
+const nameElement=document.getElementById('name');
+const photo=document.getElementById('photo');
+
+const balloonContainer=document.getElementById("balloons");
+const photoContainer=document.getElementById("photos");
+
+const targetName="denisayangg !";
+
+/* daftar foto tinggal ganti */
+
+const photos=[
+"denisa1.jpeg",
+"denisa2.jpeg",
+"denisa3.jpeg",
+"denisa4.jpeg",
+"denisa5.jpeg",
+"denisa6.jpeg",
+"denisa7.jpeg",
+"denisa8.jpeg"
+];
+
+startBtn.addEventListener('click',()=>{
+
+startBtn.style.display='none';
+content.style.display='flex';
+
+music.volume=0.5;
+music.play();
+
+fireConfetti();
+startBalloons();
+startPhotos();
+
+setTimeout(()=>{
+
+nameElement.innerText=`Happy Birthday 18, ${targetName}!`;
+textArea.classList.add('show-message');
+photo.classList.add('show-photo');
+
+},1000);
+
+});
+
+/* confetti */
+
+function fireConfetti(){
+
+for(let i=0;i<10;i++){
+
+confetti({
+particleCount:40,
+spread:360,
+origin:{x:Math.random(),y:Math.random()-0.2}
+});
+
+}
+
+}
+
+/* BALON */
+
+const colors=[
+"#ff4d6d",
+"#ffbe0b",
+"#3a86ff",
+"#8338ec",
+"#fb5607",
+"#ff99c8",
+"#90dbf4"
+];
+
+function startBalloons(){
+
+setInterval(()=>{
+
+const balloon=document.createElement("div");
+
+balloon.style.position="absolute";
+balloon.style.left=Math.random()*100+"vw";
+
+const size=Math.random()*20+30;
+
+balloon.style.width=size+"px";
+balloon.style.height=size*1.2+"px";
+
+balloon.style.background=colors[Math.floor(Math.random()*colors.length)];
+balloon.style.borderRadius="50%";
+balloon.style.display="flex";
+balloon.style.justifyContent="center";
+balloon.style.alignItems="flex-end";
+
+balloon.style.animation=`balloonUp ${Math.random()*5+6}s linear`;
+
+const string=document.createElement("div");
+
+string.style.width="2px";
+string.style.height="40px";
+string.style.background="white";
+string.style.position="absolute";
+string.style.bottom="-40px";
+string.style.left="50%";
+string.style.transform="translateX(-50%)";
+
+balloon.appendChild(string);
+
+balloonContainer.appendChild(balloon);
+
+setTimeout(()=>{
+balloon.remove();
+},10000);
+
+},800);
+
+}
+
+/* FOTO JATUH RANDOM (LEBIH NATURAL & LEBIH BESAR) */
+
+function startPhotos(){
+
+setInterval(()=>{
+
+const img=document.createElement("img");
+
+img.src=photos[Math.floor(Math.random()*photos.length)];
+
+img.style.position="absolute";
+
+/* posisi benar-benar random */
+img.style.left=Math.random()*100+"vw";
+
+/* ukuran random lebih besar */
+const size=Math.random()*140+140;
+img.style.width=size+"px";
+
+/* rotasi random */
+const rotate=Math.random()*40-20;
+img.style.transform=`rotate(${rotate}deg)`;
+
+/* style */
+img.style.borderRadius="18px";
+img.style.boxShadow="0 15px 30px rgba(0,0,0,.35)";
+
+/* animasi */
+img.style.animation=`photoFall ${Math.random()*5+7}s linear`;
+
+photoContainer.appendChild(img);
+
+setTimeout(()=>{
+img.remove();
+},12000);
+
+},900);
+
+}
+
+</script>
+
+</body>
+</html>
